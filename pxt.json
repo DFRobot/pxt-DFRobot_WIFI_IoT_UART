@@ -1,0 +1,26 @@
+{
+    "name": "DFRobot_WIFI_I0T",
+    "version": "1.1.0",
+    "description": "Add Wi-Fi connectivity to micro:bit and start your IoT project in 5 minutes!",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "Obloq.ts",
+        "Obloq.cpp",
+        "_locales/zh-cn/DFRobot_WIFI_I0T-strings.json",
+        "_locales/zh-tw/DFRobot_WIFI_I0T-strings.json"
+    ],
+    "testFiles": [
+        "test.ts",
+        "mqttMoretest.ts",
+        "httpTest.ts"
+    ],
+    "public": true,
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj"
+}
