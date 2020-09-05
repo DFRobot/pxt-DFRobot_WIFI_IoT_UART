@@ -50,54 +50,12 @@ enum TOPIC {
     topic_4 = 4
 }
 
-//天气
-enum LOCATION {
-    //%block="Sentosa"
-    Sentosa = 0,
-    //%block="Pulau Ubin"
-    Pulau_Ubin = 1,
-    //%block="Pulau Tekong"
-    Pulau_Tekong = 2,
-    //%block="Jurong Island"
-    Jurong_Island = 3,
-    //%block="Tuas"
-    Tuas = 4,
-    //%block="Changi"
-    Changi = 5,
-    //%block="City"
-    City = 6,
-    //%block="Woodlands"
-    Woodlands = 7,
-    //%block="Lim Chu Kang"
-    Lim_Chu_Kang = 8,
-    //%block="Central Water Catchment"
-    Central_Water_Catchment = 9,
-    //%block="Bukit Timah"
-    Bukit_Timah = 10,
-    //%block="Punggol"
-    Punggol = 11,
-    //%block="Tanglin"
-    Tanglin = 12,
-    //%block="Novena"
-    Novena = 13,
-    //%block="Marine Parade"
-    Marine_Parade = 14,
-    //%block="Tampines"
-    Tampines = 15,
-    //%block="Jurong East"
-    Jurong_East = 16,
-    //%block="Paya Lebar"
-    Paya_Lebar = 17,
-    //%block="Queenstown"
-    Queenstown = 18,
-    //%block="Kallang"
-    Kallang = 19
-}
+
 
 /**
  *Obloq implementation method.
  */
-//% weight=10 color=#008B00 icon="\uf1eb" block="DFRobot_WIFI_I0T"
+//% weight=10 color=#e7660b icon="\uf1eb" block="DFRobot_WIFI_I0T"
 namespace IFTTT_MQTT_Weather {
 
     //serial
@@ -142,6 +100,10 @@ namespace IFTTT_MQTT_Weather {
 
     let OBLOQ_WEBHOOKS_KEY = ""
     let OBLOQ_WEBHOOKS_EVENT = ""
+    let microIoT_WEBHOOKS_KEY = ""
+    let microIoT_WEBHOOKS_EVENT = ""
+    let microIoT_THINGSPEAK_KEY = ""
+    let OBLOQ_MQTT_EASY_IOT_SIOT = ""
     let G_city = 0;
     export enum SERVERS {
         //% blockId=SERVERS_China block="EasyIOT_CN"
@@ -149,7 +111,9 @@ namespace IFTTT_MQTT_Weather {
         //% blockId=SERVERS_English block="EasyIOT_EN"
         English,
         //% blockId=SERVERS_Global block="Beebotte"
-        Global
+        Global,
+        //% blockId=SERVERS_Siot block="Siot"
+        Siot
     }
 
     export class PacketaMqtt {
@@ -194,59 +158,215 @@ namespace IFTTT_MQTT_Weather {
         serial.writeString(text)
     }
 
-    function Obloq_wifi_icon_display(): void {
-        switch (OBLOQ_WIFI_ICON) {
-            case 1: {
-                basic.clearScreen()
-                led.plot(0, 4)
-                OBLOQ_WIFI_ICON += 1
-            } break;
-            case 2: {
-                led.plot(0, 2)
-                led.plot(1, 2)
-                led.plot(2, 3)
-                led.plot(2, 4)
-                OBLOQ_WIFI_ICON += 1
-            } break;
-            case 3: {
-                led.plot(0, 0)
-                led.plot(1, 0)
-                led.plot(2, 0)
-                led.plot(3, 1)
-                led.plot(4, 2)
-                led.plot(4, 3)
-                led.plot(4, 4)
-                OBLOQ_WIFI_ICON = 1
-            } break;
-        }
+    /**
+     * Two parallel stepper motors are executed simultaneously(DegreeDual).
+     * @param SSID to SSID ,eg: "yourSSID"
+     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
+     * @param receive to receive ,eg: SerialPin.P1
+     * @param send to send ,eg: SerialPin.P2
+    */
+    //% weight=100
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% blockId=IFTTT_MQTT_Weather_WIFI_setup
+    //% block="Setup wifi|Pin set:|receiving data (green wire): %receive|sending data (blue wire): %send|Wi-Fi:|name: %SSID|password: %PASSWORD|start connection"
+    export function WIFI_setup(/*serial*/receive: SerialPin, send: SerialPin,
+                                     /*wifi*/SSID: string, PASSWORD: string,
+        /*EVENT: string, KEY: string*/):
+        void {
+        OBLOQ_WIFI_SSID = SSID
+        OBLOQ_WIFI_PASSWORD = PASSWORD
+        OBLOQ_SERIAL_TX = send
+        OBLOQ_SERIAL_RX = receive
+        Obloq_serial_init()
+        Obloq_start_connect_http()
     }
+    /**
+     * Two parallel stepper motors are executed simultaneously(DegreeDual).
+     * @param SSID to SSID ,eg: "yourSSID"
+     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
+     * @param API_KEY to API_KEY ,eg: "yourApiKey"
+     * @param SECRET_KEY to SECRET_KEY ,eg: "yourSecretKey"
+     * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
+     * @param receive to receive ,eg: SerialPin.P1
+     * @param send to send ,eg: SerialPin.P2
+    */
+    //% weight=99
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
+    //% blockId=IFTTT_MQTT_Weather_mqtt_setup
+    //% block="MQTT configure|IOT_ID(user):%IOT_ID|IOT_PWD(password):%IOT_PWD|Topic(default topic_0):%IOT_TOPIC|server:%SERVERS||IP:%IP"
+    export function Obloq_mqtt_setup(/*mqtt*/API_KEY: string, SECRET_KEY: string, IOT_TOPIC: string, SERVER: SERVERS, IP?: string):
+        void {
+        //OBLOQ_WIFI_SSID = SSID
+        // OBLOQ_WIFI_PASSWORD = PASSWORD
+        OBLOQ_MQTT_PWD = SECRET_KEY
+        OBLOQ_MQTT_ID = API_KEY
+        OBLOQ_MQTT_TOPIC[0][0] = IOT_TOPIC
+        OBLOQ_MQTT_EASY_IOT_SIOT = IP
+        //OBLOQ_SERIAL_TX = send
+        //OBLOQ_SERIAL_RX = receive
+        Obloq_serial_init()
+        Obloq_start_connect_mqtt(SERVER, "connect wifi")
+    }
+     /**
+     * Send a message.
+     * @param top set top, eg: top
+     * @param mess set mess, eg: mess
+    */
+    //% weight=98
+    //% blockId=IFTTT_MQTT_Weather_mqtt_send_message
+    //% block="MQTT pubLish %mess |to topic_0"
+    export function Obloq_mqtt_send_message(mess: string): void {
+        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
+        if (!OBLOQ_MQTT_INIT) {
+            return
+        }
+        if (!OBLOQ_SERIAL_INIT) {
+            Obloq_serial_init()
+        }
+        obloqWriteString("|4|1|3|" + OBLOQ_MQTT_TOPIC[0][0] + "|" + mess + "|\r")
+    }
+    /**
+     * This is an MQTT listener callback function, which is very important.
+     * The specific use method can refer to "example/ObloqMqtt.ts"
+    */
+    //% weight=97
+    //% blockId=IFTTT_MQTT_Weather_mqtt_callback_user block="MQTT on topic_0 received"
+    //% useLoc="Obloq.Obloq_mqtt_callback_user"
+    export function Obloq_mqtt_callback_user(cb: (message: string) => void): void {
+        Obloq_mqtt_callback(() => {
+            const packet = new PacketaMqtt()
+            packet.message = OBLOQ_ANSWER_CONTENT
+            cb(packet.message)
+        });
+    }
+    /**
+     * ThingSpeak configuration
+     * @param KEY to KEY ,eg: "yourKey"
+     */
+    //% weight=96
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% blockId=OBLOQ_microIoT_ThingSpeak_configura
+    //% block="ThingSpeak configure key: %KEY"
+    export function microIoT_ThingSpeak_configura(KEY: string): void {
+        microIoT_THINGSPEAK_KEY = KEY
+    }
+    /**
+     * The HTTP post request.url(string): URL; content(string):content
+     * time(ms): private long maxWait
+     * @param time set timeout, eg: 10000
+    */
+    //% weight=95
+    //% blockId=IFTTT_MQTT_Weather_ThingSpeak_Get
+    //% expandableArgumentMode="enabled"
+    //% inlineInputMode=inline
+    //% block="ThingSpeak send value1: %field1||value2: %field2|value3: %field3|value4: %field4|value5: %field5|value6: %field6|value7: %field7 value8: %field8" 
+    export function microIoT_http_TK_GET(field1: string, field2?: string, field3?: string, field4?: string, field5?: string, field6?: string, field7?: string, field8?: string): void {
+        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
+        if (!OBLOQ_HTTP_INIT)
+            //return OBLOQ_STR_TYPE_IS_NONE
 
-    function Obloq_mqtt_icon_display(): void {
-        switch (OBLOQ_MQTT_ICON) {
-            case 1: {
-                basic.clearScreen()
-                led.plot(4, 0)
-                OBLOQ_MQTT_ICON += 1
-            } break;
-            case 2: {
-                led.plot(2, 0)
-                led.plot(2, 1)
-                led.plot(3, 2)
-                led.plot(4, 2)
-                OBLOQ_MQTT_ICON += 1
-            } break;
-            case 3: {
-                led.plot(0, 0)
-                led.plot(0, 1)
-                led.plot(0, 2)
-                led.plot(1, 3)
-                led.plot(2, 4)
-                led.plot(3, 4)
-                led.plot(4, 4)
-                OBLOQ_MQTT_ICON = 1
-            } break;
+        if (!OBLOQ_SERIAL_INIT) {
+            Obloq_serial_init()
         }
+        obloqWriteString("|3|1|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_TK + "/update?api_key=" + microIoT_THINGSPEAK_KEY + "&field1=" + field1 + "&field2=" + field2 + "&field3=" + field3 + "|\r")
+
+        //return Obloq_http_wait_request(time)
     }
+    /**
+     * IFTTT configuration
+     * @param EVENT to EVENT ,eg: "yourEvent"
+     * @param KEY to KEY ,eg: "yourKey"
+    */
+    //% weight=94
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% blockId=naturalScience_microIoT_http_IFTTT
+    //% block="IFTTT configure|event: %EVENT|key: %KEY"
+    export function microIoT_http_IFTTT(EVENT: string, KEY: string): void {
+        microIoT_WEBHOOKS_EVENT = EVENT
+        microIoT_WEBHOOKS_KEY = KEY
+    }
+    /**
+     * The HTTP post request.url(string): URL; content(string):content
+     * time(ms): private long maxWait
+     * @param time set timeout, eg: 10000
+    */
+    //% weight=94
+    //% blockId=IFTTT_MQTT_Weather_IFTTT_post
+    //% inlineInputMode=inline
+    //% block="IFTTT(post) | value1 %value1| value2 %value2| value3 %value3| timeout(ms) %time"
+    export function Obloq_http_IFTTT_post(value1: string, value2: string, value3: string, time: number): void {
+        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
+        if (!OBLOQ_HTTP_INIT)
+            //return OBLOQ_STR_TYPE_IS_NONE
+
+        if (!OBLOQ_SERIAL_INIT) {
+            Obloq_serial_init()
+        }
+        obloqWriteString("|3|2|http://" + OBLOQ_WEBHOOKS_URL + "/trigger/" + OBLOQ_WEBHOOKS_EVENT + "/with/key/" + OBLOQ_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "|\r")
+        let ret = Obloq_http_wait_request(time)
+        if (ret == "Congratulations! You've fired the testObloq event") {
+            ret = "OK"
+        }
+        //return ret
+    }
+    // function Obloq_wifi_icon_display(): void {
+    //     switch (OBLOQ_WIFI_ICON) {
+    //         case 1: {
+    //             basic.clearScreen()
+    //             led.plot(0, 4)
+    //             OBLOQ_WIFI_ICON += 1
+    //         } break;
+    //         case 2: {
+    //             led.plot(0, 2)
+    //             led.plot(1, 2)
+    //             led.plot(2, 3)
+    //             led.plot(2, 4)
+    //             OBLOQ_WIFI_ICON += 1
+    //         } break;
+    //         case 3: {
+    //             led.plot(0, 0)
+    //             led.plot(1, 0)
+    //             led.plot(2, 0)
+    //             led.plot(3, 1)
+    //             led.plot(4, 2)
+    //             led.plot(4, 3)
+    //             led.plot(4, 4)
+    //             OBLOQ_WIFI_ICON = 1
+    //         } break;
+    //     }
+    // }
+
+    // function Obloq_mqtt_icon_display(): void {
+    //     switch (OBLOQ_MQTT_ICON) {
+    //         case 1: {
+    //             basic.clearScreen()
+    //             led.plot(4, 0)
+    //             OBLOQ_MQTT_ICON += 1
+    //         } break;
+    //         case 2: {
+    //             led.plot(2, 0)
+    //             led.plot(2, 1)
+    //             led.plot(3, 2)
+    //             led.plot(4, 2)
+    //             OBLOQ_MQTT_ICON += 1
+    //         } break;
+    //         case 3: {
+    //             led.plot(0, 0)
+    //             led.plot(0, 1)
+    //             led.plot(0, 2)
+    //             led.plot(1, 3)
+    //             led.plot(2, 4)
+    //             led.plot(3, 4)
+    //             led.plot(4, 4)
+    //             OBLOQ_MQTT_ICON = 1
+    //         } break;
+    //     }
+    // }
 
     function Obloq_mark_reset(type: string): void {
         if (type == "wifi") {
@@ -330,8 +450,10 @@ namespace IFTTT_MQTT_Weather {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA
             } else if (SERVER == SERVERS.English) {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN
-            } else {
+            } else if (SERVERS.Global){
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
+            }else{
+                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SIOT
             }
             OBLOQ_MQTT_PORT = OBLOQ_MQTT_EASY_IOT_PORT
         } else {
@@ -432,8 +554,10 @@ namespace IFTTT_MQTT_Weather {
                     Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
                 } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN) {
                     Obloq_start_connect_mqtt(SERVERS.English, "connect " + type)
-                } else {
+                } else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
                     Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
+                }else{
+                    Obloq_start_connect_mqtt(SERVERS.Siot, "connect " + type)
                 }
                 if (OBLOQ_MQTT_INIT) {
                     OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
@@ -453,49 +577,15 @@ namespace IFTTT_MQTT_Weather {
         basic.pause(150)
     })
 
-    /**
-     * Two parallel stepper motors are executed simultaneously(DegreeDual).
-     * @param SSID to SSID ,eg: "yourSSID"
-     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
-    */
-    //% weight=200
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=IFTTT_MQTT_Weather_WIFI_setup
-    //% block="Setup wifi|Pin set:|receiving data (green wire): %receive|sending data (blue wire): %send|Wi-Fi:|name: %SSID|password: %PASSWORD|start connection"
-    export function WIFI_setup(/*serial*/receive: SerialPin, send: SerialPin,
-                                     /*wifi*/SSID: string, PASSWORD: string,
-        /*EVENT: string, KEY: string*/):
-        void {
-        OBLOQ_WIFI_SSID = SSID
-        OBLOQ_WIFI_PASSWORD = PASSWORD
-        OBLOQ_SERIAL_TX = send
-        OBLOQ_SERIAL_RX = receive
-        Obloq_serial_init()
-        Obloq_start_connect_http()
-    }
-    /**
-        * @param EVENT to EVENT ,eg: "yourEvent"
-        * @param KEY to KEY ,eg: "yourKey"
-       */
-    //% weight=99
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=IFTTT_MQTT_Weather_http_IFTTT
-    //% block="Webhooks config:|event: %EVENT|key: %KEY|"
-    export function Obloq_http_IFTTT(EVENT: string, KEY: string): void {
-        OBLOQ_WEBHOOKS_EVENT = EVENT
-        OBLOQ_WEBHOOKS_KEY = KEY
-    }
+    
+   
 
     /**
      * Two parallel stepper motors are executed simultaneously(DegreeDual).
      * @param IP to IP ,eg: "0.0.0.0"
      * @param PORT to PORT ,eg: 80
     */
-    //% weight=79
+    //% weight=50
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=IFTTT_MQTT_Weather_http_setup
@@ -506,39 +596,12 @@ namespace IFTTT_MQTT_Weather {
         OBLOQ_HTTP_PORT = PORT
     }
 
-    /**
-     * Two parallel stepper motors are executed simultaneously(DegreeDual).
-     * @param SSID to SSID ,eg: "yourSSID"
-     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-     * @param API_KEY to API_KEY ,eg: "yourApiKey"
-     * @param SECRET_KEY to SECRET_KEY ,eg: "yourSecretKey"
-     * @param IOT_TOPIC to IOT_TOPIC ,eg: "yourIotTopic"
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
-    */
-    //% weight=102
-    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
-    //% blockId=IFTTT_MQTT_Weather_mqtt_setup
-    //% block=" setup mqtt|API Key: %API_KEY|Secret Key: %SECRET_KEY|(default topic_0) Topic: %IOT_TOPIC|start connection:| server: %SERVERS"
-    export function Obloq_mqtt_setup(/*mqtt*/API_KEY: string, SECRET_KEY: string, IOT_TOPIC: string, SERVER: SERVERS):
-        void {
-        //OBLOQ_WIFI_SSID = SSID
-        // OBLOQ_WIFI_PASSWORD = PASSWORD
-        OBLOQ_MQTT_PWD = SECRET_KEY
-        OBLOQ_MQTT_ID = API_KEY
-        OBLOQ_MQTT_TOPIC[0][0] = IOT_TOPIC
-        //OBLOQ_SERIAL_TX = send
-        //OBLOQ_SERIAL_RX = receive
-        Obloq_serial_init()
-        Obloq_start_connect_mqtt(SERVER, "connect wifi")
-    }
+    
 
     /**
      * Disconnect the serial port.
     */
-    //% weight=200
+    //% weight=100
     //% blockId=IFTTT_MQTT_Weather_mqtt_add_topic
     //% block="subscribe additional %top |: %IOT_TOPIC"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
@@ -572,190 +635,14 @@ namespace IFTTT_MQTT_Weather {
             OBLOQ_MQTT_TOPIC[top][1] = "true"
         }
     }
-    //天气
-    //% weight=80
-    //% blockId=IFTTT_MQTT_Weather_Weather_setLocation
-    //% block="select a city of Singapore|%location"
-    export function Set_location(location: LOCATION): void {
-        G_city = location;
-    }
-    function get_city(): string {
-        let city = "";
-        switch (G_city) {
-            case 0:
-                city = "Sentosa";
-                break;
-            case 1:
-                city = "Pulau_Ubin";
-                break;
-            case 2:
-                city = "Pulau_Tekong";
-                break;
-            case 3:
-                city = "Jurong_Island";
-                break;
-            case 4:
-                city = "Tuas";
-                break;
-            case 5:
-                city = "Changi";
-                break;
-            case 6:
-                city = "City";
-                break;
-            case 7:
-                city = "Woodlands";
-                break;
-            case 8:
-                city = "Lim_Chu_Kang";
-                break;
-            case 9:
-                city = "Central_Water_Catchment";
-                break;
-            case 10:
-                city = "Bukit_Timah";
-                break;
-            case 11:
-                city = "Punggol";
-                break;
-            case 12:
-                city = "Tanglin";
-                break;
-            case 13:
-                city = "Novena";
-                break;
-            case 14:
-                city = "Marine_Parade";
-                break;
-            case 15:
-                city = "Tampines";
-                break;
-            case 16:
-                city = "Jurong_East";
-                break;
-            case 17:
-                city = "Paya_Lebar";
-                break;
-            case 18:
-                city = "Queenstown";
-                break;
-            case 19:
-                city = "Kallang";
-                break;
-            default:
-                city = "Sentosa";
-                break;
-        }
-        return city;
 
-
-    }
-
-    function get_request(city: string, info: string): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return OBLOQ_STR_TYPE_IS_NONE
-
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|1|http://api.dfrobot.top/weather?city=Singapore&locations=" + city + "&info=" + info + "|\r")
-        //obloqWriteString("|3|1|http://192.168.1.103:1125/weather?city=Singapore&locations=" + city + "&info=" + info + "|\r")
-
-        return Obloq_http_wait_request(10000);
-    }
-
-    //% weight=80
-    //% blockId=IFTTT_MQTT_Weather_Weather_getWeather
-    //% block="Get weather"
-    export function get_weather(): string {
-        let city = get_city();
-        let ret = get_request(city, "weather");
-        return ret;
-    }
-
-    //% weight=80
-    //% blockId=IFTTT_MQTT_Weather_Weather_getTemperature
-    //% block="Get temperature"
-    export function get_temperature(): string {
-        let city = get_city();
-        let ret = get_request(city, "temp_high/temp_low")
-        return ret;
-    }
-
-    //% weight=80
-    //% blockId=IFTTT_MQTT_Weather_Weather_getHumidity
-    //% block="Get humidity"
-    export function get_humidity(): string {
-        let city = get_city();
-        let ret = get_request(city, "humi_high/humi_low")
-        return ret;
-    }
-
-    //% weight=80
-    //% blockId=IFTTT_MQTT_Weather_Weather_getWindSpeed
-    //% block="Get wind speed"
-    export function get_windSpeed(): string {
-        let city = get_city();
-        let ret = get_request(city, "winds_max/winds_min");
-        return ret;
-    }
-    /**
-     * Disconnect the serial port.
-    */
-    /* 
-    export function Obloq_serial_quit(): void { 
-        obloqWriteString("quit!\r")
-    }*/
-
-    /**
-     * Send the ping.time(ms): private long maxWait
-     * @param time to timeout, eg: 10000
-    */
-	/*
-    //% weight=49
-    //% blockId=Obloq_send_ping
-    //% block="sendPing"
-    //% advanced=true
-    export function Obloq_send_ping(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 5000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|1|1|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "PingOk") {
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "timeout") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "PingOk") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }
-	*/
+    
 
     /**
      * Get the software version.time(ms): private long maxWait
      * @param time to timeout, eg: 10000
     */
-	/*
+	
     //% weight=50
     //% blockId=Obloq_get_version
     //% block="get version"
@@ -792,199 +679,8 @@ namespace IFTTT_MQTT_Weather {
         }
         return OBLOQ_STR_TYPE_IS_NONE
     }
-	*/
+   
 
-    /**
-     * Heartbeat request.time(ms): private long maxWait
-     * @param time to timeout, eg: 10000
-    */
-	/*
-    //% weight=48
-    //% blockId=Obloq_get_heartbeat
-    //% block="get heartbeat"
-    //% advanced=true
-    export function Obloq_get_heartbeat(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 5000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|1|3|" + time + "|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "Heartbeat") {
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "timeout") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "Heartbeat") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }
-	*/
-    /**
-     * Stop the heartbeat request.
-    */
-	/*
-    //% weight=47
-    //% blockId=Obloq_stop_heartbeat
-    //% block="stop heartbeat"
-    //% advanced=true
-    export function Obloq_stop_heartbeat(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 5000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|1|3|-2|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "Heartbeat") {
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "timeout") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "Heartbeat") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }
-
-
-    function Obloq_disconnect_wifi(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 5000
-        if (time < 100) {
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|2|2|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "WifiDisconnect") {
-                Obloq_mark_reset("wifi")
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "timeout") {
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "WifiDisconnect") {
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else {
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }
-
-*/
-
-    /**
-     * Reconnect WiFi.time(ms): private long maxWait
-     * @param time to timeout, eg: 10000
-    */
-    /* 
-    export function Obloq_wifi_reconnect(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) { 
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) { 
-            Obloq_serial_init()
-        }
-        obloqWriteString("|2|3|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "WifiConnected") { 
-                OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
-                OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
-                OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_TRUE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "WifiConnected") { 
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else { 
-                    OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
-                    OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
-                    OBLOQ_WIFI_CONNECTED = OBLOQ_BOOL_TYPE_IS_TRUE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }*/
-
-    /**
-     * pin set
-     * @param receive to receive ,eg: SerialPin.P1
-     * @param send to send ,eg: SerialPin.P2
-    */
-    /* 
-    export function Obloq_serial_pin_set(receive: SerialPin, send: SerialPin): void { 
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        OBLOQ_SERIAL_TX = send
-        OBLOQ_SERIAL_RX = receive
-        Obloq_serial_init()
-    }*/
-
-    /**
-     * connect Wifi.SSID(string):account; PWD(string):password;
-     * @param SSID to SSID ,eg: "yourSSID"
-     * @param PASSWORD to PASSWORD ,eg: "yourPASSWORD"
-    */
-    /* 
-    //% weight=100
-    //% blockId=Obloq_wifi_connect_export
-    //% block="wifi connect to| SSID %SSID| PASSWORD %PASSWORD"
-    //% advanced=true
-    export function Obloq_wifi_connect_export(SSID: string, PASSWORD: string): void { 
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        OBLOQ_WIFI_SSID = SSID
-        OBLOQ_WIFI_PASSWORD = PASSWORD
-        Obloq_connect_wifi()
-    }*/
 
     function Obloq_connect_wifi(): number {
         if (OBLOQ_WIFI_CONNECTED == OBLOQ_BOOL_TYPE_IS_TRUE) {
@@ -1003,7 +699,7 @@ namespace IFTTT_MQTT_Weather {
                 Obloq_serial_init()
             }
             //show icon
-            Obloq_wifi_icon_display()
+            //Obloq_wifi_icon_display()
             for (let i = 0; i < 3; i++) {
                 obloqWriteString("|1|1|\r")
                 basic.pause(100)
@@ -1014,7 +710,7 @@ namespace IFTTT_MQTT_Weather {
 
         while (OBLOQ_BOOL_TYPE_IS_TRUE) {
             if ((timeout_count_now + 1) % 3 == 0) {
-                Obloq_wifi_icon_display()
+                //Obloq_wifi_icon_display()
             }
             if (OBLOQ_ANSWER_CMD == "WifiConnected") {
                 OBLOQ_WIFI_IP = OBLOQ_ANSWER_CONTENT
@@ -1178,94 +874,14 @@ namespace IFTTT_MQTT_Weather {
         return Obloq_http_wait_request(time)
     }
 
-    /**
-     * The HTTP post request.url(string): URL; content(string):content
-     * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-    */
-    //% weight=99
-    //% blockId=IFTTT_MQTT_Weather_IFTTT_post
-    //% block="IFTTT(post) | value1 %value1| value2 %value2| value3 %value3| timeout(ms) %time"
-    export function Obloq_http_IFTTT_post(value1: string, value2: string, value3: string, time: number): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return OBLOQ_STR_TYPE_IS_NONE
+ 
 
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|2|http://" + OBLOQ_WEBHOOKS_URL + "/trigger/" + OBLOQ_WEBHOOKS_EVENT + "/with/key/" + OBLOQ_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "|\r")
-        let ret = Obloq_http_wait_request(time)
-        if (ret == "Congratulations! You've fired the testObloq event") {
-            ret = "OK"
-        }
-        return ret
-    }
+    
 
-    /**
-        * The HTTP post request.url(string): URL; content(string):content
-        * time(ms): private long maxWait
-        * @param time set timeout, eg: 10000
-       */
-    //% weight=99
-    //% blockId=IFTTT_MQTT_Weather_ThingSpeak_Get
-    //% block="ThingSpeak(Get) | write key %KEY|value1 %value1| value2 %value2| value3 %value3| timeout(ms) %time"
-    export function Obloq_http_TK_GET(KEY: string, field1: string, field2: string, field3: string, time: number): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_HTTP_INIT)
-            return OBLOQ_STR_TYPE_IS_NONE
+   
 
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|1|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_TK + "/update?api_key=" + KEY + "&field1=" + field1 + "&field2=" + field2 + "&field3=" + field3 + "|\r")
-
-        return Obloq_http_wait_request(time)
-    }
-
-
-
-
-    /**
-     * Delete an HTTP connection.url(string): URL; content(string):content
-     * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
-    */
-    /* 
-    export function Obloq_httpDelete(url: string, content: string, time: number): string[] {
-        if (time < 100) { 
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) { 
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|4|http://"+myip+":"+myport+"/"+url+","+content+"|\r")
-        let item = OBLOQ_STR_TYPE_IS_NONE
-        let num = 0
-        let j = 0
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (e == "200") {
-                let list = ["200", param]
-                return list
-            } else if (e == "err") {
-                let list = ["err", param]
-                return list
-            } else if (e == "|2|1|") {
-                let list = ["999", "disconnet wifi"]
-                return list
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) { 
-                let list = ["408", "time out"]
-                return list
-            }
-        }
-        let list = ["408", "time out"]
-        return list
-    }*/
+   
+   
 
     function Obloq_connect_mqtt(): void {
         if (!OBLOQ_SERIAL_INIT) {
@@ -1285,7 +901,7 @@ namespace IFTTT_MQTT_Weather {
 
         while (_timeout < 1000) {
             if (_timeout % 50 == 0) {
-                Obloq_mqtt_icon_display()
+                //Obloq_mqtt_icon_display()
                 iconnum += 1;
             }
             if (OBLOQ_ANSWER_CMD == "MqttConneted") {
@@ -1309,7 +925,7 @@ namespace IFTTT_MQTT_Weather {
             __timeout = _timeout + 2000
             while (_timeout < __timeout) {
                 if (_timeout % 50 == 0) {
-                    Obloq_mqtt_icon_display()
+                    //Obloq_mqtt_icon_display()
                     iconnum += 1
                 }
                 if (iconnum > 3) {//动画一次以上
@@ -1338,103 +954,9 @@ namespace IFTTT_MQTT_Weather {
         //basic.showString("ok")
     }
 
-    /**
-     * Reconnect the MQTT.
-    */
-    /* 
-    export function Obloq_mqtt_reconnect(): boolean {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) { 
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) { 
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|5|\r")
+   
 
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "MqttConneted") {
-                OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "MqttConnectFailure") { 
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "MqttConneted") { 
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else { 
-                    OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }  */
-
-    /**
-     * Disconnect the MQTT connection.
-    */
-    /* 
-    export function Obloq_mqtt_disconnect(): boolean { 
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        let time = 10000
-        if (time < 100) { 
-            time = 100
-        }
-        let timeout = time / 100
-        let _timeout = 0
-        if (!OBLOQ_SERIAL_INIT) { 
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|4|\r")
-
-        while (OBLOQ_BOOL_TYPE_IS_TRUE) {
-            if (OBLOQ_ANSWER_CMD == "MqttDisconnected") {
-                OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-                return OBLOQ_BOOL_TYPE_IS_TRUE
-            } else if (OBLOQ_ANSWER_CMD == "MqttDisconnectFailure") { 
-                return OBLOQ_BOOL_TYPE_IS_FALSE
-            }
-            basic.pause(100)
-            _timeout += 1
-            if (_timeout > timeout) {
-                if (OBLOQ_ANSWER_CMD != "MqttDisconnected") { 
-                    return OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-                else { 
-                    OBLOQ_MQTT_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
-                    return OBLOQ_BOOL_TYPE_IS_TRUE
-                }
-            }
-        }
-        return OBLOQ_BOOL_TYPE_IS_FALSE
-    }   */
-
-    /**
-     * Send a message.
-     * @param top set top, eg: top
-     * @param mess set mess, eg: mess
-    */
-    //% weight=101
-    //% blockId=IFTTT_MQTT_Weather_mqtt_send_message
-    //% block="MQTT pubLish %mess |to topic_0"
-    export function Obloq_mqtt_send_message(mess: string): void {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_MQTT_INIT) {
-            return
-        }
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|3|" + OBLOQ_MQTT_TOPIC[0][0] + "|" + mess + "|\r")
-    }
-
+   
     /**
      * Send a message.
      * @param top set top, eg: top
@@ -1489,21 +1011,7 @@ namespace IFTTT_MQTT_Weather {
     }
 
 
-    /**
-     * This is an MQTT listener callback function, which is very important.
-     * The specific use method can refer to "example/ObloqMqtt.ts"
-    */
-    //% weight=100
-    //% blockGap=50
-    //% blockId=IFTTT_MQTT_Weather_mqtt_callback_user block="MQTT on topic_0 received"
-    //% useLoc="Obloq.Obloq_mqtt_callback_user"
-    export function Obloq_mqtt_callback_user(cb: (message: string) => void): void {
-        Obloq_mqtt_callback(() => {
-            const packet = new PacketaMqtt()
-            packet.message = OBLOQ_ANSWER_CONTENT
-            cb(packet.message)
-        });
-    }
+    
 
     /**
      * This is an MQTT listener callback function, which is very important.
