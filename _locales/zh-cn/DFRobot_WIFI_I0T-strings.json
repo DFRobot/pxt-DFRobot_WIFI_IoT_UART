@@ -1,6 +1,4 @@
 {
-	"DFRobotWiFiIoTUART.SERVERS.China|block": "中国",
-	"DFRobotWiFiIoTUART.SERVERS.Global|block": "全球",
 	"DFRobotWiFiIoTUART.mqttSetup|block": "物联网服务: | Iot_id: %IOT_ID| Iot_pwd: %IOT_PWD| (默认 topic_0) Topic: %IOT_TOPIC | 启动连接: | 服务器: %SERVER",
 	"DFRobotWiFiIoTUART.WIFISetup|block": "WiFi 初始设置 | 引脚设置: | 接收数据(绿色导线): %receive| 发送数据(蓝色导线): %send | Wi-Fi: | 名称: %SSID| 密码: %PASSWORD 启动连接",
 	"DFRobotWiFiIoTUART.getVersion|block": "版本号",
