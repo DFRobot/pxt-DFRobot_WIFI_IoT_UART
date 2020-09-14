@@ -28,55 +28,60 @@ WiFi_IoT_UART.SERVERS.China
 * Accessing Easy_IoT using mqtt protocol
 
 ```blocks
-WiFi_IoT_UART.mqttCallbackUser(function (message) {
+input.onButtonPressed(Button.A, function () {
+    DFRobotWiFiIoTUART.mqttSendMessageMore("mess", TOPIC.topic_1)
+})
+DFRobotWiFiIoTUART.mqttCallbackUserMore(TOPIC.topic_1, function (message) {
     serial.writeLine("" + (message))
 })
-input.onButtonPressed(Button.A, function () {
-    WiFi_IoT_UART.mqttSendMessage("mess")
+basic.forever(function () {
+    DFRobotWiFiIoTUART.WIFISetup(
+    SerialPin.P1,
+    SerialPin.P2,
+    "yourSSID",
+    "yourPASSWORD"
+    )
+    DFRobotWiFiIoTUART.mqttSetup(
+    "yourApiKey",
+    "yourSecretKey",
+    "yourIotTopic",
+    DFRobotWiFiIoTUART.SERVERS.China
+    )
 })
-WiFi_IoT_UART.WIFI_setup(
-SerialPin.P1,
-SerialPin.P2,
-"yourSSID",
-"yourPASSWORD"
-)
-WiFi_IoT_UART.mqttSetup(
-"yourApiKey",
-"yourSecretKey",
-"yourIotTopic",
-WiFi_IoT_UART.SERVERS.China
-)
 ```
 
 * Accessing IFTTT using HTTP protocol 
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
-    WiFi_IoT_UART.IFTTTSend("", "", "")
+    DFRobotWiFiIoTUART.IFTTTSend("Hi", "DFRobot", "2020")
 })
-WiFi_IoT_UART.WIFI_setup(
-SerialPin.P1,
-SerialPin.P2,
-"yourSSID",
-"yourPASSWORD"
-)
-WiFi_IoT_UART.IFTTTConfigura("yourEvent", "yourKey")
+basic.forever(function () {
+    DFRobotWiFiIoTUART.WIFISetup(
+    SerialPin.P1,
+    SerialPin.P2,
+    "yourSSID",
+    "yourPASSWORD"
+    )
+    DFRobotWiFiIoTUART.IFTTTConfigura("yourEvent", "yourKey")
+})
 ```
 
 * Accessing ThingSpeak using HTTP protocol 
 
 ```blocks
 input.onButtonPressed(Button.A, function () {
-    WiFi_IoT_UART.ThingSpeakSend("")
+    DFRobotWiFiIoTUART.ThingSpeakSend("2020")
 })
-WiFi_IoT_UART.WIFI_setup(
-SerialPin.P1,
-SerialPin.P2,
-"yourSSID",
-"yourPASSWORD"
-)
-WiFi_IoT_UART.ThingSpeakConfigura("yourKey")
-
+basic.forever(function () {
+    DFRobotWiFiIoTUART.WIFISetup(
+    SerialPin.P1,
+    SerialPin.P2,
+    "yourSSID",
+    "yourPASSWORD"
+    )
+    DFRobotWiFiIoTUART.ThingSpeakConfigura("yourKey")
+})
 ```
 
 ## License

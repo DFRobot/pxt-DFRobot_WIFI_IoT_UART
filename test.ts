@@ -1,18 +1,20 @@
-WiFi_IoT_UART.mqttCallbackUser(function (message) {
+input.onButtonPressed(Button.A, function () {
+    DFRobotWiFiIoTUART.mqttSendMessageMore("mess", TOPIC.topic_1)
+})
+DFRobotWiFiIoTUART.mqttCallbackUserMore(TOPIC.topic_1, function (message) {
     serial.writeLine("" + (message))
 })
-input.onButtonPressed(Button.A, function () {
-    WiFi_IoT_UART.mqttSendMessage("mess")
+basic.forever(function () {
+    DFRobotWiFiIoTUART.WIFISetup(
+    SerialPin.P1,
+    SerialPin.P2,
+    "yourSSID",
+    "yourPASSWORD"
+    )
+    DFRobotWiFiIoTUART.mqttSetup(
+    "yourApiKey",
+    "yourSecretKey",
+    "yourIotTopic",
+    DFRobotWiFiIoTUART.SERVERS.China
+    )
 })
-WiFi_IoT_UART.WIFI_setup(
-SerialPin.P1,
-SerialPin.P2,
-"yourSSID",
-"yourPASSWORD"
-)
-WiFi_IoT_UART.mqttSetup(
-"yourApiKey",
-"yourSecretKey",
-"yourIotTopic",
-WiFi_IoT_UART.SERVERS.China
-)

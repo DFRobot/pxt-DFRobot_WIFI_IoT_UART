@@ -9,8 +9,6 @@
  * @copyright	GNU Lesser General Public License
  *
  * @author [email](jie.tang@dfrobot.com)
- * @version  V1.0
- * @date  2020-0-05
  */
 
 
@@ -56,7 +54,7 @@ enum TOPIC {
  *Obloq implementation method.
  */
 //% weight=10 color=#e7660b icon="\uf1eb" block="DFRobot WIFI I0T UART"
-namespace WiFi_IoT_UART {
+namespace DFRobotWiFiIoTUART {
 
     //serial
     let OBLOQ_SERIAL_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
@@ -169,8 +167,8 @@ namespace WiFi_IoT_UART {
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_WIFI_setup
-    //% block="Setup wifi|Pin set:|receiving data (green wire): %receive|sending data (blue wire): %send|Wi-Fi:|name: %SSID|password: %PASSWORD|start connection"
-    export function WIFI_setup(/*serial*/receive: SerialPin, send: SerialPin,
+    //% block="Wi-Fi configure|Pin set:|receiving data (green wire): %receive|sending data (blue wire): %send|Wi-Fi:|name: %SSID|password: %PASSWORD|start connection"
+    export function WIFISetup(/*serial*/receive: SerialPin, send: SerialPin,
                                      /*wifi*/SSID: string, PASSWORD: string,
         /*EVENT: string, KEY: string*/):
         void {
@@ -210,38 +208,6 @@ namespace WiFi_IoT_UART {
         Obloq_serial_init()
         Obloq_start_connect_mqtt(SERVER, "connect wifi")
     }
-     /**
-     * Send a message.
-     * @param top set top, eg: top
-     * @param mess set mess, eg: mess
-    */
-    //% weight=98
-    //% blockId=WiFi_IoT_UART_mqtt_send_message
-    //% block="MQTT pubLish %mess |to topic_0"
-    export function mqttSendMessage(mess: string): void {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        if (!OBLOQ_MQTT_INIT) {
-            return
-        }
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|4|1|3|" + OBLOQ_MQTT_TOPIC[0][0] + "|" + mess + "|\r")
-    }
-    /**
-     * This is an MQTT listener callback function, which is very important.
-     * The specific use method can refer to "example/ObloqMqtt.ts"
-    */
-    //% weight=97
-    //% blockId=WiFi_IoT_UART_mqtt_callback_user block="MQTT on topic_0 received"
-    //% useLoc="Obloq.Obloq_mqtt_callback_user"
-    export function mqttCallbackUser(cb: (message: string) => void): void {
-        Obloq_mqtt_callback(() => {
-            const packet = new PacketaMqtt()
-            packet.message = OBLOQ_ANSWER_CONTENT
-            cb(packet.message)
-        });
-    }
     /**
      * ThingSpeak configuration
      * @param KEY to KEY ,eg: "yourKey"
@@ -255,9 +221,8 @@ namespace WiFi_IoT_UART {
         microIoT_THINGSPEAK_KEY = KEY
     }
     /**
-     * The HTTP post request.url(string): URL; content(string):content
-     * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
+    * ThingSpeak configured and sent data
+    * @param field1 ,eg: 2020
     */
     //% weight=95
     //% blockId=WiFi_IoT_UART_ThingSpeak_Send
@@ -290,15 +255,17 @@ namespace WiFi_IoT_UART {
         microIoT_WEBHOOKS_EVENT = EVENT
         microIoT_WEBHOOKS_KEY = KEY
     }
-    /**
-     * The HTTP post request.url(string): URL; content(string):content
+     /**
+     * IFTTT send data
      * time(ms): private long maxWait
-     * @param time set timeout, eg: 10000
+     * @param value1 ,eg: Hi
+     * @param value2 ,eg: DFRobot
+     * @param value3 ,eg: 2020
     */
     //% weight=93
     //% blockId=WiFi_IoT_UART_IFTTT_Send
     //% inlineInputMode=inline
-    //% block="IFTTT send | value1 %value1| value2 %value2| value3 %value3"
+    //% block="IFTTT send value1 %value1| value2 %value2| value3 %value3"
     export function IFTTTSend(value1: string, value2: string, value3: string): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -547,12 +514,12 @@ namespace WiFi_IoT_UART {
 
     /**
      * Disconnect the serial port.
+      * @param IOT_TOPIC ,eg: "yourIotTopic"
     */
-    //% weight=100
+    //% weight=97
     //% blockId=WiFi_IoT_UART_mqtt_add_topic
     //% block="subscribe additional %top |: %IOT_TOPIC"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
-    //% advanced=true
     export function mqttAddTopic(top: TOPIC, IOT_TOPIC: string): void {
         OBLOQ_MQTT_TOPIC[top][0] = IOT_TOPIC
         if (!OBLOQ_MQTT_INIT || OBLOQ_WORKING_MODE_IS_STOP) return
@@ -590,10 +557,9 @@ namespace WiFi_IoT_UART {
      * @param time to timeout, eg: 10000
     */
 	
-    //% weight=50
+    //% weight=10
     //% blockId=WiFi_IoT_UART_get_version
     //% block="get version"
-    //% advanced=true
     export function getVersion(): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         let time = 5000
@@ -886,11 +852,10 @@ namespace WiFi_IoT_UART {
      * @param top set top, eg: top
      * @param mess set mess, eg: mess
     */
-    //% weight=190
+    //% weight=98
     //% blockId=WiFi_IoT_UART_mqtt_send_message_more
-    //% block="MQTT pubLish %mess |to %top"
+    //% block="send message %mess |to %top"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
-    //% advanced=true
     export function mqttSendMessageMore(mess: string, top: TOPIC): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
@@ -941,12 +906,10 @@ namespace WiFi_IoT_UART {
      * This is an MQTT listener callback function, which is very important.
      * The specific use method can refer to "example/ObloqMqtt.ts"
     */
-    //% weight=180
-    //% blockGap=60
-    //% blockId=WiFi_IoT_UART_mqtt_callback_user_more block="MQTT on %top |received"
+    //% weight=96
+    //% blockId=WiFi_IoT_UART_mqtt_callback_user_more block="on received %top"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     //% useLoc="Obloq.Obloq_mqtt_callback_user_more"
-    //% advanced=true
     export function mqttCallbackUserMore(top: TOPIC, cb: (message: string) => void) {
         Obloq_mqtt_callback_more(top, () => {
             const packet = new PacketaMqtt()
