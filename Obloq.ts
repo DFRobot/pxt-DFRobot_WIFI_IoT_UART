@@ -56,7 +56,7 @@ enum TOPIC {
  *Obloq implementation method.
  */
 //% weight=10 color=#e7660b icon="\uf1eb" block="DFRobot_WIFI_I0T"
-namespace IFTTT_MQTT_Weather {
+namespace WiFi_IoT_UART {
 
     //serial
     let OBLOQ_SERIAL_INIT = OBLOQ_BOOL_TYPE_IS_FALSE
@@ -168,7 +168,7 @@ namespace IFTTT_MQTT_Weather {
     //% weight=100
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=IFTTT_MQTT_Weather_WIFI_setup
+    //% blockId=WiFi_IoT_UART_WIFI_setup
     //% block="Setup wifi|Pin set:|receiving data (green wire): %receive|sending data (blue wire): %send|Wi-Fi:|name: %SSID|password: %PASSWORD|start connection"
     export function WIFI_setup(/*serial*/receive: SerialPin, send: SerialPin,
                                      /*wifi*/SSID: string, PASSWORD: string,
@@ -195,9 +195,9 @@ namespace IFTTT_MQTT_Weather {
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
-    //% blockId=IFTTT_MQTT_Weather_mqtt_setup
+    //% blockId=WiFi_IoT_UART_mqtt_setup
     //% block="MQTT configure|IOT_ID(user):%IOT_ID|IOT_PWD(password):%IOT_PWD|Topic(default topic_0):%IOT_TOPIC|server:%SERVERS||IP:%IP"
-    export function Obloq_mqtt_setup(/*mqtt*/API_KEY: string, SECRET_KEY: string, IOT_TOPIC: string, SERVER: SERVERS, IP?: string):
+    export function mqttSetup(/*mqtt*/API_KEY: string, SECRET_KEY: string, IOT_TOPIC: string, SERVER: SERVERS, IP?: string):
         void {
         //OBLOQ_WIFI_SSID = SSID
         // OBLOQ_WIFI_PASSWORD = PASSWORD
@@ -216,9 +216,9 @@ namespace IFTTT_MQTT_Weather {
      * @param mess set mess, eg: mess
     */
     //% weight=98
-    //% blockId=IFTTT_MQTT_Weather_mqtt_send_message
+    //% blockId=WiFi_IoT_UART_mqtt_send_message
     //% block="MQTT pubLish %mess |to topic_0"
-    export function Obloq_mqtt_send_message(mess: string): void {
+    export function mqttSendMessage(mess: string): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
             return
@@ -233,9 +233,9 @@ namespace IFTTT_MQTT_Weather {
      * The specific use method can refer to "example/ObloqMqtt.ts"
     */
     //% weight=97
-    //% blockId=IFTTT_MQTT_Weather_mqtt_callback_user block="MQTT on topic_0 received"
+    //% blockId=WiFi_IoT_UART_mqtt_callback_user block="MQTT on topic_0 received"
     //% useLoc="Obloq.Obloq_mqtt_callback_user"
-    export function Obloq_mqtt_callback_user(cb: (message: string) => void): void {
+    export function mqttCallbackUser(cb: (message: string) => void): void {
         Obloq_mqtt_callback(() => {
             const packet = new PacketaMqtt()
             packet.message = OBLOQ_ANSWER_CONTENT
@@ -249,9 +249,9 @@ namespace IFTTT_MQTT_Weather {
     //% weight=96
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=OBLOQ_microIoT_ThingSpeak_configura
+    //% blockId=WiFi_IoT_UART_ThingSpeak_configura
     //% block="ThingSpeak configure key: %KEY"
-    export function microIoT_ThingSpeak_configura(KEY: string): void {
+    export function ThingSpeakConfigura(KEY: string): void {
         microIoT_THINGSPEAK_KEY = KEY
     }
     /**
@@ -260,11 +260,11 @@ namespace IFTTT_MQTT_Weather {
      * @param time set timeout, eg: 10000
     */
     //% weight=95
-    //% blockId=IFTTT_MQTT_Weather_ThingSpeak_Get
+    //% blockId=WiFi_IoT_UART_ThingSpeak_Send
     //% expandableArgumentMode="enabled"
     //% inlineInputMode=inline
     //% block="ThingSpeak send value1: %field1||value2: %field2|value3: %field3|value4: %field4|value5: %field5|value6: %field6|value7: %field7 value8: %field8" 
-    export function microIoT_http_TK_GET(field1: string, field2?: string, field3?: string, field4?: string, field5?: string, field6?: string, field7?: string, field8?: string): void {
+    export function ThingSpeakSend(field1: string, field2?: string, field3?: string, field4?: string, field5?: string, field6?: string, field7?: string, field8?: string): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             //return OBLOQ_STR_TYPE_IS_NONE
@@ -284,9 +284,9 @@ namespace IFTTT_MQTT_Weather {
     //% weight=94
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=naturalScience_microIoT_http_IFTTT
+    //% blockId=WiFi_IoT_UART_IFTTT_Configura
     //% block="IFTTT configure|event: %EVENT|key: %KEY"
-    export function microIoT_http_IFTTT(EVENT: string, KEY: string): void {
+    export function IFTTTConfigura(EVENT: string, KEY: string): void {
         microIoT_WEBHOOKS_EVENT = EVENT
         microIoT_WEBHOOKS_KEY = KEY
     }
@@ -295,11 +295,11 @@ namespace IFTTT_MQTT_Weather {
      * time(ms): private long maxWait
      * @param time set timeout, eg: 10000
     */
-    //% weight=94
-    //% blockId=IFTTT_MQTT_Weather_IFTTT_post
+    //% weight=93
+    //% blockId=WiFi_IoT_UART_IFTTT_Send
     //% inlineInputMode=inline
-    //% block="IFTTT(post) | value1 %value1| value2 %value2| value3 %value3| timeout(ms) %time"
-    export function Obloq_http_IFTTT_post(value1: string, value2: string, value3: string, time: number): void {
+    //% block="IFTTT send | value1 %value1| value2 %value2| value3 %value3"
+    export function IFTTTSend(value1: string, value2: string, value3: string): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             //return OBLOQ_STR_TYPE_IS_NONE
@@ -308,66 +308,13 @@ namespace IFTTT_MQTT_Weather {
             Obloq_serial_init()
         }
         obloqWriteString("|3|2|http://" + OBLOQ_WEBHOOKS_URL + "/trigger/" + OBLOQ_WEBHOOKS_EVENT + "/with/key/" + OBLOQ_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "|\r")
-        let ret = Obloq_http_wait_request(time)
+        let ret = Obloq_http_wait_request(10000)
         if (ret == "Congratulations! You've fired the testObloq event") {
             ret = "OK"
         }
         //return ret
     }
-    // function Obloq_wifi_icon_display(): void {
-    //     switch (OBLOQ_WIFI_ICON) {
-    //         case 1: {
-    //             basic.clearScreen()
-    //             led.plot(0, 4)
-    //             OBLOQ_WIFI_ICON += 1
-    //         } break;
-    //         case 2: {
-    //             led.plot(0, 2)
-    //             led.plot(1, 2)
-    //             led.plot(2, 3)
-    //             led.plot(2, 4)
-    //             OBLOQ_WIFI_ICON += 1
-    //         } break;
-    //         case 3: {
-    //             led.plot(0, 0)
-    //             led.plot(1, 0)
-    //             led.plot(2, 0)
-    //             led.plot(3, 1)
-    //             led.plot(4, 2)
-    //             led.plot(4, 3)
-    //             led.plot(4, 4)
-    //             OBLOQ_WIFI_ICON = 1
-    //         } break;
-    //     }
-    // }
-
-    // function Obloq_mqtt_icon_display(): void {
-    //     switch (OBLOQ_MQTT_ICON) {
-    //         case 1: {
-    //             basic.clearScreen()
-    //             led.plot(4, 0)
-    //             OBLOQ_MQTT_ICON += 1
-    //         } break;
-    //         case 2: {
-    //             led.plot(2, 0)
-    //             led.plot(2, 1)
-    //             led.plot(3, 2)
-    //             led.plot(4, 2)
-    //             OBLOQ_MQTT_ICON += 1
-    //         } break;
-    //         case 3: {
-    //             led.plot(0, 0)
-    //             led.plot(0, 1)
-    //             led.plot(0, 2)
-    //             led.plot(1, 3)
-    //             led.plot(2, 4)
-    //             led.plot(3, 4)
-    //             led.plot(4, 4)
-    //             OBLOQ_MQTT_ICON = 1
-    //         } break;
-    //     }
-    // }
-
+    
     function Obloq_mark_reset(type: string): void {
         if (type == "wifi") {
             OBLOQ_WIFI_IP = "0.0.0.0"
@@ -588,9 +535,9 @@ namespace IFTTT_MQTT_Weather {
     //% weight=50
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    //% blockId=IFTTT_MQTT_Weather_http_setup
+    //% blockId=WiFi_IoT_UART_http_setup
     //% block=" setup http | ip: %IP| port: %PORT | start connection"
-    export function Obloq_http_setup(IP: string, PORT: number):
+    export function httpSetup(IP: string, PORT: number):
         void {
         OBLOQ_HTTP_IP = IP
         OBLOQ_HTTP_PORT = PORT
@@ -602,17 +549,17 @@ namespace IFTTT_MQTT_Weather {
      * Disconnect the serial port.
     */
     //% weight=100
-    //% blockId=IFTTT_MQTT_Weather_mqtt_add_topic
+    //% blockId=WiFi_IoT_UART_mqtt_add_topic
     //% block="subscribe additional %top |: %IOT_TOPIC"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     //% advanced=true
-    export function Obloq_mqtt_add_topic(top: TOPIC, IOT_TOPIC: string): void {
+    export function mqttAddTopic(top: TOPIC, IOT_TOPIC: string): void {
         OBLOQ_MQTT_TOPIC[top][0] = IOT_TOPIC
         if (!OBLOQ_MQTT_INIT || OBLOQ_WORKING_MODE_IS_STOP) return
 
         let _timeout = 0
         if (OBLOQ_MQTT_TOPIC[top][0] != "x" && OBLOQ_MQTT_TOPIC[top][1] == "false") {
-            Obloq_subTopic(<string>OBLOQ_MQTT_TOPIC[top][0])
+            subTopic(<string>OBLOQ_MQTT_TOPIC[top][0])
         } else {
             return
         }
@@ -644,10 +591,10 @@ namespace IFTTT_MQTT_Weather {
     */
 	
     //% weight=50
-    //% blockId=Obloq_get_version
+    //% blockId=WiFi_IoT_UART_get_version
     //% block="get version"
     //% advanced=true
-    export function Obloq_get_version(): string {
+    export function getVersion(): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         let time = 5000
         if (time < 100) {
@@ -728,20 +675,6 @@ namespace IFTTT_MQTT_Weather {
         return OBLOQ_ERROR_TYPE_IS_ERR
     }
 
-    /**
-     * Get IP address.
-    */
-	/*
-    //% weight=98
-    //% blockId=IFTTT_MQTT_Weather_Obloq_ifconfig
-    //% block="ipconfig"
-    //% advanced=true
-    export function Obloq_wifi_ipconfig(): string {
-        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
-        return OBLOQ_WIFI_IP
-    }
-	*/
-
     function Obloq_http_wait_request(time: number): string {
         if (time < 100) {
             time = 100
@@ -816,10 +749,10 @@ namespace IFTTT_MQTT_Weather {
     */
 
     //% weight=79
-    //% blockId=IFTTT_MQTT_Weather_http_get
+    //% blockId=WiFi_IoT_UART_http_get
     //% block="http(get) | url %url| timeout(ms) %time"
     //% advanced=false
-    export function Obloq_http_get(url: string, time: number): string {
+    export function httpGet(url: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             return OBLOQ_STR_TYPE_IS_NONE
@@ -838,9 +771,9 @@ namespace IFTTT_MQTT_Weather {
      * @param time set timeout, eg: 10000
     */
     //% weight=78
-    //% blockId=IFTTT_MQTT_Weather_http_post
+    //% blockId=WiFi_IoT_UART_http_post
     //% block="http(post) | url %url| content %content| timeout(ms) %time"
-    export function Obloq_http_post(url: string, content: string, time: number): string {
+    export function httpPost(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             return OBLOQ_STR_TYPE_IS_NONE
@@ -859,9 +792,9 @@ namespace IFTTT_MQTT_Weather {
      * @param time set timeout, eg: 10000
     */
     //% weight=77
-    //% blockId=IFTTT_MQTT_Weather_http_put
+    //% blockId=WiFi_IoT_UART_http_put
     //% block="http(put) | url %url| content %content| timeout(ms) %time"
-    export function Obloq_http_put(url: string, content: string, time: number): string {
+    export function httpPut(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             return OBLOQ_STR_TYPE_IS_NONE
@@ -873,15 +806,6 @@ namespace IFTTT_MQTT_Weather {
 
         return Obloq_http_wait_request(time)
     }
-
- 
-
-    
-
-   
-
-   
-   
 
     function Obloq_connect_mqtt(): void {
         if (!OBLOQ_SERIAL_INIT) {
@@ -918,7 +842,7 @@ namespace IFTTT_MQTT_Weather {
         }
         for (let i = 0; i < OBLOQ_MQTT_TOPIC_NUM_MAX; i++) {
             if (OBLOQ_MQTT_TOPIC[i][0] != "x" && OBLOQ_MQTT_TOPIC[i][1] == "false") {
-                Obloq_subTopic(<string>OBLOQ_MQTT_TOPIC[i][0])
+                subTopic(<string>OBLOQ_MQTT_TOPIC[i][0])
             } else {
                 continue
             }
@@ -963,11 +887,11 @@ namespace IFTTT_MQTT_Weather {
      * @param mess set mess, eg: mess
     */
     //% weight=190
-    //% blockId=IFTTT_MQTT_Weather_mqtt_send_message_more
+    //% blockId=WiFi_IoT_UART_mqtt_send_message_more
     //% block="MQTT pubLish %mess |to %top"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     //% advanced=true
-    export function Obloq_mqtt_send_message_more(mess: string, top: TOPIC): void {
+    export function mqttSendMessageMore(mess: string, top: TOPIC): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
             return
@@ -988,9 +912,9 @@ namespace IFTTT_MQTT_Weather {
      * @param top set top, eg: top
     */
     //% weight=67
-    //% blockId=IFTTT_MQTT_Weather_subTopic
+    //% blockId=WiFi_IoT_UART_subTopic
     //% advanced=true
-    function Obloq_subTopic(topic: string): void {
+    function subTopic(topic: string): void {
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
         }
@@ -1019,11 +943,11 @@ namespace IFTTT_MQTT_Weather {
     */
     //% weight=180
     //% blockGap=60
-    //% blockId=IFTTT_MQTT_Weather_mqtt_callback_user_more block="MQTT on %top |received"
+    //% blockId=WiFi_IoT_UART_mqtt_callback_user_more block="MQTT on %top |received"
     //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     //% useLoc="Obloq.Obloq_mqtt_callback_user_more"
     //% advanced=true
-    export function Obloq_mqtt_callback_user_more(top: TOPIC, cb: (message: string) => void) {
+    export function mqttCallbackUserMore(top: TOPIC, cb: (message: string) => void) {
         Obloq_mqtt_callback_more(top, () => {
             const packet = new PacketaMqtt()
             packet.message = OBLOQ_ANSWER_CONTENT

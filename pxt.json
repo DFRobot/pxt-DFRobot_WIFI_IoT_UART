@@ -14,9 +14,7 @@
         "_locales/zh-tw/DFRobot_WIFI_I0T-strings.json"
     ],
     "testFiles": [
-        "test.ts",
-        "mqttMoretest.ts",
-        "httpTest.ts"
+        "test.ts"
     ],
     "public": true,
     "supportedTargets": [
