@@ -6,7 +6,7 @@
 * WiFi connection configuration
 
 ```blocks
-WiFi_IoT_UART.WIFI_setup(
+DFRobotWiFiIoTUART.WIFI_setup(
 SerialPin.P1,
 SerialPin.P2,
 "yourSSID",
@@ -17,11 +17,11 @@ SerialPin.P2,
 * Mqtt connection configuration
 
 ```blocks
-WiFi_IoT_UART.mqttSetup(
+DFRobotWiFiIoTUART.mqttSetup(
 "yourApiKey",
 "yourSecretKey",
 "yourIotTopic",
-WiFi_IoT_UART.SERVERS.China
+DFRobotWiFiIoTUART.SERVERS.China
 )
 ```
 
