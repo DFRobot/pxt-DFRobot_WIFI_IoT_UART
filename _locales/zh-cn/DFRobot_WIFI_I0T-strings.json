@@ -15,5 +15,6 @@
     "DFRobotWiFiIoTUART.ThingSpeakConfigura|block":"ThingSpeak 配置密钥 %KEY",
     "DFRobotWiFiIoTUART.ThingSpeakSend|block":"ThingSpeak 发送 值1: %field1||值2: %field2|值3: %field3|值4: %field4|值5: %field5|值6: %field6|值7: %field7 值8: %field8",
     "DFRobotWiFiIoTUART.IFTTTConfigura|block":"IFTTT 配置|事件: %EVENT|密钥: %KEY",
-    "DFRobotWiFiIoTUART.IFTTTSend|block":"IFTTT 发送 值1 %value1| 值2 %value2| 值3 %value3"
+    "DFRobotWiFiIoTUART.IFTTTSend|block":"IFTTT 发送 值1 %value1| 值2 %value2| 值3 %value3",
+    "DFRobotWiFiIoTUART.httpSetup|block": "配置 http | ip: %IP| port: %PORT | 开始连接"
 }

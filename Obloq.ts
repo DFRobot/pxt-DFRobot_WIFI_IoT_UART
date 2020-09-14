@@ -217,7 +217,7 @@ namespace DFRobotWiFiIoTUART {
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_ThingSpeak_configura
     //% block="ThingSpeak configure key: %KEY"
-    export function ThingSpeakConfigura(KEY: string): void {
+    export function ThingSpeakConfigure(KEY: string): void {
         microIoT_THINGSPEAK_KEY = KEY
     }
     /**
@@ -251,7 +251,7 @@ namespace DFRobotWiFiIoTUART {
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_IFTTT_Configura
     //% block="IFTTT configure|event: %EVENT|key: %KEY"
-    export function IFTTTConfigura(EVENT: string, KEY: string): void {
+    export function IFTTTConfigure(EVENT: string, KEY: string): void {
         microIoT_WEBHOOKS_EVENT = EVENT
         microIoT_WEBHOOKS_KEY = KEY
     }
@@ -503,7 +503,7 @@ namespace DFRobotWiFiIoTUART {
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_http_setup
-    //% block=" setup http | ip: %IP| port: %PORT | start connection"
+    //% block=" configure http | ip: %IP| port: %PORT | start connection"
     export function httpSetup(IP: string, PORT: number):
         void {
         OBLOQ_HTTP_IP = IP

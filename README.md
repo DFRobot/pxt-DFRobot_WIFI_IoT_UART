@@ -63,7 +63,7 @@ basic.forever(function () {
     "yourSSID",
     "yourPASSWORD"
     )
-    DFRobotWiFiIoTUART.IFTTTConfigura("yourEvent", "yourKey")
+    DFRobotWiFiIoTUART.IFTTTConfigure("yourEvent", "yourKey")
 })
 ```
 
@@ -80,7 +80,7 @@ basic.forever(function () {
     "yourSSID",
     "yourPASSWORD"
     )
-    DFRobotWiFiIoTUART.ThingSpeakConfigura("yourKey")
+    DFRobotWiFiIoTUART.ThingSpeakConfigure("yourKey")
 })
 ```
 
