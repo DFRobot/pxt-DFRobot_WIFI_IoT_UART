@@ -1,5 +1,5 @@
 {
-	"DFRobotWiFiIoTUART.mqttSetup|block": "物联网服务: | Iot_id: %IOT_ID| Iot_pwd: %IOT_PWD| (默认 topic_0) Topic: %IOT_TOPIC | 启动连接: | 服务器: %SERVER",
+	"DFRobotWiFiIoTUART.mqttSetup|block":"MQTT 配置|IOT_ID(用户): %IOT_ID| IOT_PWD(密码) :%IOT_PWD| Topic(默认topic_0): %IOT_TOPIC|服务器:%SERVERS||IP(SIOT):%IP",
 	"DFRobotWiFiIoTUART.WIFISetup|block": "WiFi 初始设置 | 引脚设置: | 接收数据(绿色导线): %receive| 发送数据(蓝色导线): %send | Wi-Fi: | 名称: %SSID| 密码: %PASSWORD 启动连接",
 	"DFRobotWiFiIoTUART.getVersion|block": "版本号",
 	"DFRobotWiFiIoTUART.mqttSendMessage|block": "发送消息 %mess |至 topic_0",
