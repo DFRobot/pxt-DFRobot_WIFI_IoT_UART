@@ -17,7 +17,7 @@ const OBLOQ_DEBUG = false
 const OBLOQ_MQTT_DEFAULT_SERVER = true
 //DFRobot easy iot
 const OBLOQ_MQTT_EASY_IOT_SERVER_CHINA = "iot.dfrobot.com.cn"
-const OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL = "mqtt.beebotte.com"
+const OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL = "api.beebotte.com"
 const OBLOQ_MQTT_EASY_IOT_SERVER_EN = "iot.dfrobot.com"
 const OBLOQ_MQTT_EASY_IOT_SERVER_TK = "api.thingspeak.com"
 const OBLOQ_MQTT_EASY_IOT_PORT = 1883
@@ -103,14 +103,13 @@ namespace DFRobotWiFiIoTUART {
     let microIoT_WEBHOOKS_EVENT = ""
     let microIoT_THINGSPEAK_KEY = ""
     let OBLOQ_MQTT_EASY_IOT_SIOT = ""
+    let microIoT_BEEBOTTE_Token = ""
     let G_city = 0;
     export enum SERVERS {
         //% blockId=SERVERS_China block="EasyIOT_CN"
         China,
         //% blockId=SERVERS_English block="EasyIOT_EN"
         English,
-        //% blockId=SERVERS_Global block="Beebotte"
-        Global,
         //% blockId=SERVERS_Siot block="Siot"
         Siot
     }
@@ -253,8 +252,8 @@ namespace DFRobotWiFiIoTUART {
     //% blockId=WiFi_IoT_UART_IFTTT_Configura
     //% block="IFTTT configure|event: %EVENT|key: %KEY"
     export function IFTTTConfigure(EVENT: string, KEY: string): void {
-        microIoT_WEBHOOKS_EVENT = EVENT
-        microIoT_WEBHOOKS_KEY = KEY
+        microIoT_WEBHOOKS_EVENT = EVENT;
+        microIoT_WEBHOOKS_KEY = KEY;
     }
      /**
      * IFTTT send data
@@ -281,6 +280,35 @@ namespace DFRobotWiFiIoTUART {
             ret = "OK"
         }
         //return ret
+    }
+    /**Beebotte Configure 
+     * @param token ,eg: Your Channel Token
+     */
+    //%weight=92
+    //%blockID=WiFi_IoT_UART_BeeBotte_Configura block="BeeBotte configura key: %token "
+    export function token(token:string):void{
+        microIoT_BEEBOTTE_Token = token;
+    }
+    /**BeeBotte send data
+     * @param channel ,eg: Your Channel Name
+     * @param resource ,eg: Your Resource Name
+     * @param data ,eg: Send Message
+     */
+     //%weight=91
+    //%blockID=WiFi_IoT_UART_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
+    export function sendmessage(channel:string, resource:string, data:string){
+        while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
+        if (!OBLOQ_HTTP_INIT)
+            //return OBLOQ_STR_TYPE_IS_NONE
+
+        if (!OBLOQ_SERIAL_INIT) {
+            Obloq_serial_init()
+        }
+        obloqWriteString("|3|2|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL + "/v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token +",{\"data\":" + data + "}\r\n|\r");
+        let ret = Obloq_http_wait_request(10000)
+        if (ret == "Congratulations! You've fired the testObloq event") {
+            ret = "OK"
+        }
     }
     
     function Obloq_mark_reset(type: string): void {
@@ -365,9 +393,11 @@ namespace DFRobotWiFiIoTUART {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA
             } else if (SERVER == SERVERS.English) {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN
-            } else if (SERVERS.Global){
-                OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
-            }else{
+            } 
+            // else if (SERVERS.Global){
+            //     OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
+            // }
+            else{
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SIOT
             }
             OBLOQ_MQTT_PORT = OBLOQ_MQTT_EASY_IOT_PORT
@@ -469,9 +499,11 @@ namespace DFRobotWiFiIoTUART {
                     Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
                 } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN) {
                     Obloq_start_connect_mqtt(SERVERS.English, "connect " + type)
-                } else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
-                    Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
-                }else{
+                } 
+                // else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
+                //     Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
+                // }
+                else{
                     Obloq_start_connect_mqtt(SERVERS.Siot, "connect " + type)
                 }
                 if (OBLOQ_MQTT_INIT) {
