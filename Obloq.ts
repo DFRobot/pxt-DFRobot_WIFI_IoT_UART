@@ -282,7 +282,7 @@ namespace DFRobotWiFiIoTUART {
         //return ret
     }
     /**Beebotte Configure 
-     * @param token ,eg: Your Channel Token
+     * @param token ,eg: "Your Channel Token"
      */
     //%weight=92
     //%blockID=WiFi_IoT_UART_BeeBotte_Configura block="BeeBotte configura key: %token "
@@ -290,9 +290,9 @@ namespace DFRobotWiFiIoTUART {
         microIoT_BEEBOTTE_Token = token;
     }
     /**BeeBotte send data
-     * @param channel ,eg: Your Channel Name
-     * @param resource ,eg: Your Resource Name
-     * @param data ,eg: Send Message
+     * @param channel ,eg: "Your Channel Name"
+     * @param resource ,eg: "Your Resource Name"
+     * @param data ,eg: "Send Message"
      */
      //%weight=91
     //%blockID=WiFi_IoT_UART_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
