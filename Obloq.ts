@@ -42,6 +42,7 @@ const OBLOQ_BOOL_TYPE_IS_FALSE = false
 const OBLOQ_WEBHOOKS_URL = "maker.ifttt.com"
 //topics name
 enum TOPIC {
+    topic_0 = 0,
     topic_1 = 1,
     topic_2 = 2,
     topic_3 = 3,
