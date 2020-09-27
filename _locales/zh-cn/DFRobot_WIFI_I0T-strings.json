@@ -18,5 +18,6 @@
     "DFRobotWiFiIoTUART.ThingSpeakConfigure|block":"ThingSpeak 配置密钥：%KEY",
     "DFRobotWiFiIoTUART.IFTTTConfigure|block":"IFTTT 配置事件: %EVENT 密钥: %KEY",
     "DFRobotWiFiIoTUART.token|block":"BeeBotte 配置密钥: %token",
-    "DFRobotWiFiIoTUART.sendmessage|block":"BeeBotte 频道: %channel 资源: %resource 发送数据 %data"
+    "DFRobotWiFiIoTUART.sendmessage|block":"BeeBotte 频道: %channel 资源: %resource 发送数据 %data",
+    "":""
 }
