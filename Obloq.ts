@@ -106,11 +106,11 @@ namespace DFRobotWiFiIoTUART {
     let microIoT_BEEBOTTE_Token = ""
     let G_city = 0;
     export enum SERVERS {
-        //% blockId=SERVERS_China block="EasyIOT_CN"
+        //% blockId=SERVERS_China block="EasyIoT_CN"
         China,
-        //% blockId=SERVERS_English block="EasyIOT_EN"
+        //% blockId=SERVERS_English block="EasyIoT_EN"
         English,
-        //% blockId=SERVERS_Siot block="Siot"
+        //% blockId=SERVERS_Siot block="SIOT"
         Siot
     }
 
@@ -194,7 +194,7 @@ namespace DFRobotWiFiIoTUART {
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% SERVER.fieldEditor="gridpicker" SERVER.fieldOptions.columns=2
     //% blockId=WiFi_IoT_UART_mqtt_setup
-    //% block="MQTT configure|IOT_ID(user):%IOT_ID|IOT_PWD(password):%IOT_PWD|Topic(default topic_0):%IOT_TOPIC|server:%SERVERS||IP:%IP"
+    //% block="MQTT configure|IoT_ID(user):%IOT_ID|IoT_PWD(password):%IOT_PWD|Topic(default topic_0):%IOT_TOPIC|server:%SERVERS||IP:%IP"
     export function mqttSetup(/*mqtt*/API_KEY: string, SECRET_KEY: string, IOT_TOPIC: string, SERVER: SERVERS, IP?: string):
         void {
         //OBLOQ_WIFI_SSID = SSID
