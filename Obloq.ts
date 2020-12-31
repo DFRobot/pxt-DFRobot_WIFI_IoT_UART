@@ -54,7 +54,7 @@ enum TOPIC {
 /**
  *Obloq implementation method.
  */
-//% weight=10 color=#e7660b icon="\uf1eb" block="DFRobot WIFI I0T UART"
+//% weight=10 color=#e7660b icon="\uf1eb" block="DFRobotWiFiIoTModuleUART"
 namespace DFRobotWiFiIoTUART {
 
     //serial
