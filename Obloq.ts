@@ -536,11 +536,11 @@ namespace DFRobotWiFiIoTUART {
     //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_http_setup
-    //% block=" configure http | ip: %IP| port: %PORT | start connection"
-    export function httpSetup(IP: string, PORT: number):
+    //% block=" configure http | ip: %IP| start connection"
+    export function httpSetup(IP: string):
         void {
         OBLOQ_HTTP_IP = IP
-        OBLOQ_HTTP_PORT = PORT
+        //OBLOQ_HTTP_PORT = PORT
     }
 
     
@@ -759,7 +759,7 @@ namespace DFRobotWiFiIoTUART {
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
         }
-        obloqWriteString("|3|1|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "|\r")
+        obloqWriteString("|3|1|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "|\r")
 
         return Obloq_http_wait_request(time)
     }
@@ -780,7 +780,7 @@ namespace DFRobotWiFiIoTUART {
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
         }
-        obloqWriteString("|3|2|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "," + content + "|\r")
+        obloqWriteString("|3|2|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
 
         return Obloq_http_wait_request(time)
     }
@@ -801,7 +801,7 @@ namespace DFRobotWiFiIoTUART {
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
         }
-        obloqWriteString("|3|3|http://" + OBLOQ_HTTP_IP + ":" + OBLOQ_HTTP_PORT + "/" + url + "," + content + "|\r")
+        obloqWriteString("|3|3|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
 
         return Obloq_http_wait_request(time)
     }
