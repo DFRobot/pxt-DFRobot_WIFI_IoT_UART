@@ -532,17 +532,17 @@ namespace DFRobotWiFiIoTUART {
      * @param IP to IP ,eg: "0.0.0.0"
      * @param PORT to PORT ,eg: 80
     */
-    // weight=50
-    // receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
-    // send.fieldEditor="gridpicker" send.fieldOptions.columns=3
-    // blockId=WiFi_IoT_UART_http_setup
-    // block=" configure http | ip: %IP| start connection"
-    /*
+    //% weight=50
+    //% receive.fieldEditor="gridpicker" receive.fieldOptions.columns=3
+    //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
+    //% blockId=WiFi_IoT_UART_http_setup
+    //% block=" configure http | ip: %IP| start connection"
+    
     export function httpSetup(IP: string):
         void {
         OBLOQ_HTTP_IP = IP
         //OBLOQ_HTTP_PORT = PORT
-    }*/
+    }
 
     
 
@@ -748,11 +748,11 @@ namespace DFRobotWiFiIoTUART {
      * @param time set timeout, eg: 10000
     */
 
-    // weight=79
-    // blockId=WiFi_IoT_UART_http_get
-    // block="http(get) | url %url| timeout(ms) %time"
-    // advanced=false
-    /*
+    //% weight=79
+    //% blockId=WiFi_IoT_UART_http_get
+    //% block="http(get) | url %url| timeout(ms) %time"
+    //% advanced=false
+    
     export function httpGet(url: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -760,21 +760,21 @@ namespace DFRobotWiFiIoTUART {
 
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
-        }*/
-        //obloqWriteString("|3|1|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "|\r")
+        }
+        obloqWriteString("|3|1|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "|\r")
 
-        //return Obloq_http_wait_request(time)
-    //}
+        return Obloq_http_wait_request(time)
+    }
 
     /**
      * The HTTP post request.url(string): URL; content(string):content
      * time(ms): private long maxWait
      * @param time set timeout, eg: 10000
     */
-    // weight=78
-    // blockId=WiFi_IoT_UART_http_post
-    // block="http(post) | url %url| content %content| timeout(ms) %time"
-    /*
+    //% weight=78
+    //% blockId=WiFi_IoT_UART_http_post
+    //% block="http(post) | url %url| content %content| timeout(ms) %time"
+    
     export function httpPost(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -782,11 +782,11 @@ namespace DFRobotWiFiIoTUART {
 
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
-        }*/
-        //obloqWriteString("|3|2|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
+        }
+        obloqWriteString("|3|2|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
 
-        //return Obloq_http_wait_request(time)
-    //}
+        return Obloq_http_wait_request(time)
+    }
 
     /**
      * The HTTP put request,Obloq.put() can only be used for http protocol!
@@ -794,10 +794,10 @@ namespace DFRobotWiFiIoTUART {
      * @param time set timeout, eg: 10000
     */
     
-    // weight=77
-    // blockId=WiFi_IoT_UART_http_put
-    // block="http(put) | url %url| content %content| timeout(ms) %time"
-    /*
+    //% weight=77
+    //% blockId=WiFi_IoT_UART_http_put
+    //% block="http(put) | url %url| content %content| timeout(ms) %time"
+    
     export function httpPut(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -805,11 +805,11 @@ namespace DFRobotWiFiIoTUART {
 
         if (!OBLOQ_SERIAL_INIT) {
             Obloq_serial_init()
-        }*/
-        //obloqWriteString("|3|3|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
+        }
+        obloqWriteString("|3|3|http://" + OBLOQ_HTTP_IP + /*":" + OBLOQ_HTTP_PORT +*/ "/" + url + "," + content + "|\r")
 
-        //return Obloq_http_wait_request(time)
-    //}
+        return Obloq_http_wait_request(time)
+    }
 
     function Obloq_connect_mqtt(): void {
         if (!OBLOQ_SERIAL_INIT) {
