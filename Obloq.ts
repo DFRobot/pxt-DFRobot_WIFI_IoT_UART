@@ -1,3 +1,5 @@
+
+
 /*！
  * @file Obloq/Obloq.ts
  * @brief DFRobot's obloq makecode library.
@@ -234,9 +236,9 @@ namespace DFRobotWiFiIoTUART {
         if (!OBLOQ_HTTP_INIT)
             //return OBLOQ_STR_TYPE_IS_NONE
 
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
+            if (!OBLOQ_SERIAL_INIT) {
+                Obloq_serial_init()
+            }
         obloqWriteString("|3|1|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_TK + "/update?api_key=" + microIoT_THINGSPEAK_KEY + "&field1=" + field1 + "&field2=" + field2 + "&field3=" + field3 + "|\r")
 
         //return Obloq_http_wait_request(time)
@@ -255,13 +257,13 @@ namespace DFRobotWiFiIoTUART {
         microIoT_WEBHOOKS_EVENT = EVENT;
         microIoT_WEBHOOKS_KEY = KEY;
     }
-     /**
-     * IFTTT send data
-     * time(ms): private long maxWait
-     * @param value1 ,eg: Hi
-     * @param value2 ,eg: DFRobot
-     * @param value3 ,eg: 2020
-    */
+    /**
+    * IFTTT send data
+    * time(ms): private long maxWait
+    * @param value1 ,eg: Hi
+    * @param value2 ,eg: DFRobot
+    * @param value3 ,eg: 2020
+   */
     //% weight=93
     //% blockId=WiFi_IoT_UART_IFTTT_Send
     //% inlineInputMode=inline
@@ -271,9 +273,9 @@ namespace DFRobotWiFiIoTUART {
         if (!OBLOQ_HTTP_INIT)
             //return OBLOQ_STR_TYPE_IS_NONE
 
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
+            if (!OBLOQ_SERIAL_INIT) {
+                Obloq_serial_init()
+            }
         obloqWriteString("|3|2|http://" + OBLOQ_WEBHOOKS_URL + "/trigger/" + microIoT_WEBHOOKS_EVENT + "/with/key/" + microIoT_WEBHOOKS_KEY + ",{\"value1\":\"" + value1 + "\",\"value2\":\"" + value2 + "\",\"value3\":\"" + value3 + "\" }" + "|\r")
         let ret = Obloq_http_wait_request(10000)
         if (ret == "Congratulations! You've fired the testObloq event") {
@@ -286,7 +288,7 @@ namespace DFRobotWiFiIoTUART {
      */
     //%weight=92
     //%blockID=WiFi_IoT_UART_BeeBotte_Configura block="BeeBotte configura key: %token "
-    export function token(token:string):void{
+    export function token(token: string): void {
         microIoT_BEEBOTTE_Token = token;
     }
     /**BeeBotte send data
@@ -294,23 +296,23 @@ namespace DFRobotWiFiIoTUART {
      * @param resource ,eg: "Your Resource Name"
      * @param data ,eg: "Send Message"
      */
-     //%weight=91
+    //%weight=91
     //%blockID=WiFi_IoT_UART_BeeBotte_sendmessage block="BeeBotte Channel: %channel Resource: %resource send value %data "
-    export function sendmessage(channel:string, resource:string, data:string){
+    export function sendmessage(channel: string, resource: string, data: string) {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
             //return OBLOQ_STR_TYPE_IS_NONE
 
-        if (!OBLOQ_SERIAL_INIT) {
-            Obloq_serial_init()
-        }
-        obloqWriteString("|3|2|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL + "/v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token +",{\"data\":" + data + "}\r\n|\r");
+            if (!OBLOQ_SERIAL_INIT) {
+                Obloq_serial_init()
+            }
+        obloqWriteString("|3|2|http://" + OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL + "/v1/data/write/" + channel + "/" + resource + "?token=" + microIoT_BEEBOTTE_Token + ",{\"data\":" + data + "}\r\n|\r");
         let ret = Obloq_http_wait_request(10000)
         if (ret == "Congratulations! You've fired the testObloq event") {
             ret = "OK"
         }
     }
-    
+
     function Obloq_mark_reset(type: string): void {
         if (type == "wifi") {
             OBLOQ_WIFI_IP = "0.0.0.0"
@@ -332,20 +334,20 @@ namespace DFRobotWiFiIoTUART {
         let item = OBLOQ_STR_TYPE_IS_NONE
         //First send data through usb, avoid the first data scrambled.
         obloqWriteString("123")
-        
+
         item = serial.readString()
         item = serial.readString()
         item = serial.readString()
-        
+
         serial.redirect(
             OBLOQ_SERIAL_TX,
             OBLOQ_SERIAL_RX,
             BaudRate.BaudRate9600
-        ) 
+        )
         obloqSetTxBufferSize(300)
         obloqSetRxBufferSize(300)
         obloqWriteString("\r")
-        
+
         item = serial.readString()
         OBLOQ_SERIAL_INIT = OBLOQ_BOOL_TYPE_IS_TRUE
         obloqClearRxBuffer()
@@ -393,11 +395,11 @@ namespace DFRobotWiFiIoTUART {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA
             } else if (SERVER == SERVERS.English) {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN
-            } 
+            }
             // else if (SERVERS.Global){
             //     OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
             // }
-            else{
+            else {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SIOT
             }
             OBLOQ_MQTT_PORT = OBLOQ_MQTT_EASY_IOT_PORT
@@ -499,11 +501,11 @@ namespace DFRobotWiFiIoTUART {
                     Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
                 } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN) {
                     Obloq_start_connect_mqtt(SERVERS.English, "connect " + type)
-                } 
+                }
                 // else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
                 //     Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
                 // }
-                else{
+                else {
                     Obloq_start_connect_mqtt(SERVERS.Siot, "connect " + type)
                 }
                 if (OBLOQ_MQTT_INIT) {
@@ -524,8 +526,8 @@ namespace DFRobotWiFiIoTUART {
         basic.pause(150)
     })
 
-    
-   
+
+
 
     /**
      * Two parallel stepper motors are executed simultaneously(DegreeDual).
@@ -537,14 +539,14 @@ namespace DFRobotWiFiIoTUART {
     //% send.fieldEditor="gridpicker" send.fieldOptions.columns=3
     //% blockId=WiFi_IoT_UART_http_setup
     //% block=" configure http | ip: %IP| start connection"
-    
+
     export function httpSetup(IP: string):
         void {
         OBLOQ_HTTP_IP = IP
         //OBLOQ_HTTP_PORT = PORT
     }
 
-    
+
 
     /**
      * Disconnect the serial port.
@@ -584,13 +586,13 @@ namespace DFRobotWiFiIoTUART {
         }
     }
 
-    
+
 
     /**
      * Get the software version.time(ms): private long maxWait
      * @param time to timeout, eg: 10000
     */
-	
+
     //% weight=10
     //% blockId=WiFi_IoT_UART_get_version
     //% block="get version"
@@ -626,7 +628,7 @@ namespace DFRobotWiFiIoTUART {
         }
         return OBLOQ_STR_TYPE_IS_NONE
     }
-   
+
 
 
     function Obloq_connect_wifi(): number {
@@ -752,7 +754,7 @@ namespace DFRobotWiFiIoTUART {
     //% blockId=WiFi_IoT_UART_http_get
     //% block="http(get) | url %url| timeout(ms) %time"
     //% advanced=false
-    
+
     export function httpGet(url: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -774,7 +776,7 @@ namespace DFRobotWiFiIoTUART {
     //% weight=78
     //% blockId=WiFi_IoT_UART_http_post
     //% block="http(post) | url %url| content %content| timeout(ms) %time"
-    
+
     export function httpPost(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -793,11 +795,11 @@ namespace DFRobotWiFiIoTUART {
      * url(string): URL; content(string):content; time(ms): private long maxWait
      * @param time set timeout, eg: 10000
     */
-    
+
     //% weight=77
     //% blockId=WiFi_IoT_UART_http_put
     //% block="http(put) | url %url| content %content| timeout(ms) %time"
-    
+
     export function httpPut(url: string, content: string, time: number): string {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_HTTP_INIT)
@@ -882,9 +884,9 @@ namespace DFRobotWiFiIoTUART {
         //basic.showString("ok")
     }
 
-   
 
-   
+
+
     /**
      * Send a message.
      * @param top set top, eg: top
@@ -927,6 +929,7 @@ namespace DFRobotWiFiIoTUART {
 
     function Obloq_mqtt_callback_more(top: TOPIC, a: Action): void {
         switch (top) {
+            case TOPIC.topic_0: OBLOQ_MQTT_CB[0] = a; break;
             case TOPIC.topic_1: OBLOQ_MQTT_CB[1] = a; break;
             case TOPIC.topic_2: OBLOQ_MQTT_CB[2] = a; break;
             case TOPIC.topic_3: OBLOQ_MQTT_CB[3] = a; break;
@@ -939,7 +942,7 @@ namespace DFRobotWiFiIoTUART {
     }
 
 
-    
+
 
     /**
      * This is an MQTT listener callback function, which is very important.
@@ -1006,6 +1009,8 @@ namespace DFRobotWiFiIoTUART {
             let num = str.indexOf("|")
             OBLOQ_ANSWER_CMD = str.substr(0, num)
             OBLOQ_ANSWER_CONTENT = str.substr(num + 1, str.length - OBLOQ_ANSWER_CMD.length - 1)
+
+            serial.writeLine(OBLOQ_ANSWER_CONTENT)
             switch (OBLOQ_ANSWER_CMD) {
                 case OBLOQ_MQTT_TOPIC[0][0]: { if (OBLOQ_MQTT_CB[0] != null) obloqforevers(OBLOQ_MQTT_CB[0]); } break;
                 case OBLOQ_MQTT_TOPIC[1][0]: { if (OBLOQ_MQTT_CB[1] != null) obloqforevers(OBLOQ_MQTT_CB[1]); } break;
@@ -1041,7 +1046,7 @@ namespace DFRobotWiFiIoTUART {
             }
             return
         } else if (item.indexOf("|2|1|", 0) != -1) {
-            
+
             OBLOQ_ANSWER_CMD = "WifiDisconnect"
             OBLOQ_ANSWER_CONTENT = OBLOQ_STR_TYPE_IS_NONE
             if (OBLOQ_MQTT_INIT || OBLOQ_HTTP_INIT || OBLOQ_WIFI_CONNECTED) {
@@ -1080,8 +1085,8 @@ namespace DFRobotWiFiIoTUART {
         OBLOQ_MQTT_EVENT = OBLOQ_BOOL_TYPE_IS_TRUE
         obloqEventOn()
         //control.onEvent(<number>32, <number>1, Obloq_serial_recevice,16); // register handler
-        serial.onDataReceived('\r', Obloq_serial_recevice )
+        serial.onDataReceived('\r', Obloq_serial_recevice)
         //control.onEvent(32, 1, Obloq_serial_recevice)
     }
 
-} 
+}
