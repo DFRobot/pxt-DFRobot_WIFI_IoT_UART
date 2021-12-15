@@ -179,6 +179,12 @@ namespace DFRobotWiFiIoTUART {
         OBLOQ_SERIAL_TX = send
         OBLOQ_SERIAL_RX = receive
         Obloq_serial_init()
+        for (let i = 0; i < 3; i++) {
+                obloqWriteString("|1|1|\r")
+                basic.pause(100)
+            }
+        obloqWriteString("|1|4|\r")
+        basic.pause(2000)
         Obloq_start_connect_http()
     }
     /**
@@ -207,8 +213,7 @@ namespace DFRobotWiFiIoTUART {
         OBLOQ_MQTT_EASY_IOT_SIOT = IP
         //OBLOQ_SERIAL_TX = send
         //OBLOQ_SERIAL_RX = receive
-        Obloq_serial_init()
-        Obloq_start_connect_mqtt(SERVER, "connect wifi")
+        Obloq_start_connect_mqtt(SERVER, "connect mqtt")
     }
     /**
      * ThingSpeak configuration
@@ -396,9 +401,6 @@ namespace DFRobotWiFiIoTUART {
             } else if (SERVER == SERVERS.English) {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN
             }
-            // else if (SERVERS.Global){
-            //     OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL
-            // }
             else {
                 OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SIOT
             }
@@ -482,48 +484,48 @@ namespace DFRobotWiFiIoTUART {
     }
 
     basic.forever(() => {
-        if (OBLOQ_DEBUG) { led.plot(0, 0) }
-        basic.pause(150)
-        if ((OBLOQ_WRONG_TYPE == "wifi disconnect") ||
-            (OBLOQ_WRONG_TYPE == "wifi connect timeout") ||
-            (OBLOQ_WRONG_TYPE == "wifi connect failure") ||
-            (OBLOQ_WRONG_TYPE == "mqtt pulish failure") ||
-            (OBLOQ_WRONG_TYPE == "mqtt subtopic timeout") ||
-            (OBLOQ_WRONG_TYPE == "mqtt subtopic failure") ||
-            (OBLOQ_WRONG_TYPE == "mqtt connect timeout") ||
-            (OBLOQ_WRONG_TYPE == "mqtt connect failure")) {
-            OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_TRUE
-            let type = "wifi"//OBLOQ_WRONG_TYPE.substr(0,4)
-            Obloq_mark_reset(type)
-            if (OBLOQ_DEBUG) { basic.showString(OBLOQ_WRONG_TYPE) }
-            if (OBLOQ_WORKING_MODE_IS_MQTT) {
-                if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA) {
-                    Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
-                } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN) {
-                    Obloq_start_connect_mqtt(SERVERS.English, "connect " + type)
-                }
-                // else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
-                //     Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
-                // }
-                else {
-                    Obloq_start_connect_mqtt(SERVERS.Siot, "connect " + type)
-                }
-                if (OBLOQ_MQTT_INIT) {
-                    OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
-                    OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-            }
-            if (OBLOQ_WORKING_MODE_IS_HTTP) {
-                Obloq_start_connect_http()
-                if (OBLOQ_HTTP_INIT) {
-                    OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
-                    OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
-                }
-            }
+        // if (OBLOQ_DEBUG) { led.plot(0, 0) }
+        // basic.pause(150)
+        // if ((OBLOQ_WRONG_TYPE == "wifi disconnect") ||
+        //     (OBLOQ_WRONG_TYPE == "wifi connect timeout") ||
+        //     (OBLOQ_WRONG_TYPE == "wifi connect failure") ||
+        //     (OBLOQ_WRONG_TYPE == "mqtt pulish failure") ||
+        //     (OBLOQ_WRONG_TYPE == "mqtt subtopic timeout") ||
+        //     (OBLOQ_WRONG_TYPE == "mqtt subtopic failure") ||
+        //     (OBLOQ_WRONG_TYPE == "mqtt connect timeout") ||
+        //     (OBLOQ_WRONG_TYPE == "mqtt connect failure")) {
+        //     OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_TRUE
+        //     let type = "wifi"//OBLOQ_WRONG_TYPE.substr(0,4)
+        //     Obloq_mark_reset(type)
+        //     if (OBLOQ_DEBUG) { basic.showString(OBLOQ_WRONG_TYPE) }
+        //     if (OBLOQ_WORKING_MODE_IS_MQTT) {
+        //         if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_CHINA) {
+        //             Obloq_start_connect_mqtt(SERVERS.China, "connect " + type)
+        //         } else if (OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_EN) {
+        //             Obloq_start_connect_mqtt(SERVERS.English, "connect " + type)
+        //         }
+        //         // else if(OBLOQ_MQTT_SERVER = OBLOQ_MQTT_EASY_IOT_SERVER_GLOBAL) {
+        //         //     Obloq_start_connect_mqtt(SERVERS.Global, "connect " + type)
+        //         // }
+        //         else {
+        //             Obloq_start_connect_mqtt(SERVERS.Siot, "connect " + type)
+        //         }
+        //         if (OBLOQ_MQTT_INIT) {
+        //             OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
+        //             OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
+        //         }
+        //     }
+        //     if (OBLOQ_WORKING_MODE_IS_HTTP) {
+        //         Obloq_start_connect_http()
+        //         if (OBLOQ_HTTP_INIT) {
+        //             OBLOQ_WRONG_TYPE = OBLOQ_STR_TYPE_IS_NONE
+        //             OBLOQ_WORKING_MODE_IS_STOP = OBLOQ_BOOL_TYPE_IS_FALSE
+        //         }
+        //     }
 
-        }
-        if (OBLOQ_DEBUG) { led.unplot(0, 0) }
-        basic.pause(150)
+        // }
+        // if (OBLOQ_DEBUG) { led.unplot(0, 0) }
+        // basic.pause(150)
     })
 
 
@@ -649,10 +651,10 @@ namespace DFRobotWiFiIoTUART {
             }
             //show icon
             //Obloq_wifi_icon_display()
-            for (let i = 0; i < 3; i++) {
-                obloqWriteString("|1|1|\r")
-                basic.pause(100)
-            }
+            // for (let i = 0; i < 3; i++) {
+            //     obloqWriteString("|1|1|\r")
+            //     basic.pause(100)
+            // }
             obloqWriteString("|2|1|" + OBLOQ_WIFI_SSID + "," + OBLOQ_WIFI_PASSWORD + "|\r") //Send wifi account and password instructions
             OBLOQ_WIFI_CONNECT_FIRST = OBLOQ_BOOL_TYPE_IS_FALSE
         }
@@ -673,6 +675,7 @@ namespace DFRobotWiFiIoTUART {
                 //basic.showIcon(IconNames.No)
                 return OBLOQ_ERROR_TYPE_IS_WIFI_CONNECT_TIMEOUT
             }
+            basic.pause(100);
         }
         return OBLOQ_ERROR_TYPE_IS_ERR
     }
