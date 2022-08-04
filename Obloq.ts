@@ -833,7 +833,7 @@ namespace DFRobotWiFiIoTUART {
 
         Obloq_connect_mqtt()
 
-        while (_timeout < 1000) {
+        while (_timeout < 5000) {
             if (_timeout % 50 == 0) {
                 //Obloq_mqtt_icon_display()
                 iconnum += 1;
@@ -847,7 +847,7 @@ namespace DFRobotWiFiIoTUART {
             _timeout += 1
 
         }
-        if (_timeout >= 1000 && OBLOQ_ANSWER_CMD != "MqttConneted") {
+        if (_timeout >= 5000 && OBLOQ_ANSWER_CMD != "MqttConneted") {
             return OBLOQ_ERROR_TYPE_IS_MQTT_CONNECT_TIMEOUT
         }
         for (let i = 0; i < OBLOQ_MQTT_TOPIC_NUM_MAX; i++) {
