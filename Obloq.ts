@@ -833,7 +833,7 @@ namespace DFRobotWiFiIoTUART {
 
         Obloq_connect_mqtt()
 
-        while (_timeout < 5000) {
+        while (_timeout < 10000) {
             if (_timeout % 50 == 0) {
                 //Obloq_mqtt_icon_display()
                 iconnum += 1;
@@ -887,8 +887,6 @@ namespace DFRobotWiFiIoTUART {
         return OBLOQ_ERROR_TYPE_IS_SUCCE
         //basic.showString("ok")
     }
-
-
 
 
     /**
