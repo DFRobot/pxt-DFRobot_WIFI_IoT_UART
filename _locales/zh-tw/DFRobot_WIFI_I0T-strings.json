@@ -4,7 +4,7 @@
 	"DFRobotWiFiIoTUART.getVersion|block": "獲取版本號",
 	"DFRobotWiFiIoTUART.mqttSendMessage|block": "发送消息 %mess |至 topic_0",
 	"DFRobotWiFiIoTUART.mqttSendMessageMore|block": "發送訊息 %mess |至 %top",
-	"DFRobotWiFiIoTUART.mqttAddTopic|block": "新增订阅 %top |: %IOT_TOPIC",
+	"DFRobotWiFiIoTUART.mqttAddTopic|block": "新增訂閱 %top |: %IOT_TOPIC",
 	"DFRobotWiFiIoTUART.mqttCallbackUser|block": "在 topic_0 收到消息时运行",
 	"DFRobotWiFiIoTUART.mqttCallbackUserMore|block": " 當收到 %top",
 	"DFRobotWiFiIoTUART.httpGet|block": "http(get) | url %url| 超時(毫秒) %time",
