@@ -897,7 +897,6 @@ namespace DFRobotWiFiIoTUART {
     //% weight=98
     //% blockId=WiFi_IoT_UART_mqtt_send_message_more
     //% block="send message %mess |to %top"
-    //% top.fieldEditor="gridpicker" top.fieldOptions.columns=2
     export function mqttSendMessageMore(mess: string, top: TOPIC): void {
         while (OBLOQ_WORKING_MODE_IS_STOP) { basic.pause(20) }
         if (!OBLOQ_MQTT_INIT) {
